@@ -1,0 +1,9 @@
+[submodule "Buildster"]
+	path = Buildster
+	url = https://github.com/PierceLBrooks/Buildster.git
+[submodule "boost"]
+	path = boost
+	url = https://github.com/PierceLBrooks/boost.git
+[submodule "Project/TES3MP"]
+	path = Project/TES3MP
+	url = https://github.com/PierceLBrooks/TES3MP.git

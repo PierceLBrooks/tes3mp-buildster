@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildster directory="build" distribution="../Distribution">
+  <project directory="../Project">
+    <dependencies>
+      <if_check id="BUILDSTER_OS" check="Windows">
+        <dependency>
+          <label>boost</label>
+          <subpath>build</subpath>
+          <local>
+            <path><data id="BUILDSTER_WD"></data>/../boost</path>
+          </local>
+          <build>
+            <arguments></arguments>
+            <shells>
+              <shell>
+                <work><data id="BUILDSTER_WD"></data>/../boost/tools/build</work>
+                <commands>
+                  <command>
+                    <switch id="BUILDSTER_OS">
+                      <case check="Windows">bootstrap.bat</case>
+                      <default><quit></quit></default>
+                    </switch>
+                  </command>
+                  <command>
+                    <switch id="BUILDSTER_OS">
+                      <case check="Windows">b2.exe --prefix=<install></install>/install install</case>
+                      <default><quit></quit></default>
+                    </switch>
+                  </command>
+                </commands>
+              </shell>
+              <shell>
+                <work><data id="BUILDSTER_WD"></data>/../boost</work>
+                <commands>
+                  <command>
+                    <switch id="BUILDSTER_OS">
+                      <case check="Windows"><install></install>/install/bin/b2.exe --with-filesystem --with-iostreams --with-locale --build-dir=<install></install>/build --prefix=<install></install>/final toolset=gcc --build-type=minimal install</case>
+                      <default><quit></quit></default>
+                    </switch>
+                  </command>
+                </commands>
+              </shell>
+            </shells>
+          </build>
+          <exports>
+            <export type="headers">
+              <key>BOOST_INCLUDE_PATH</key>
+              <value><install></install>/final/include/boost-1_75</value>
+            </export>
+            <export type="libraries">
+              <key>BOOST_LIBRARIES</key>
+              <value><install></install>/final/lib</value>
+            </export>
+          </exports>
+          <imports></imports>
+        </dependency>
+      </if_check>
+      <dependency>
+        <label>crabnet</label>
+        <subpath>build</subpath>
+        <remote>
+          <url>https://github.com/PierceLBrooks/CrabNet.git</url>
+          <git_repo>
+            <branch>master</branch>
+            <credentials>
+              <username>username</username>
+              <password>password</password>
+            </credentials>
+          </git_repo>
+        </remote>
+        <build>
+          <arguments></arguments>
+          <cmake>
+            <generator>
+              <switch id="BUILDSTER_OS">
+                <case check="Windows">MinGW Makefiles</case>
+                <case check="Linux">Unix Makefiles</case>
+                <case check="Darwin">Xcode</case>
+                <default><quit></quit></default>
+              </switch>
+            </generator>
+            <source>..</source>
+          </cmake>
+        </build>
+        <exports>
+          <export type="headers">
+            <key>CRABNET_INCLUDE_PATH</key>
+            <value><install></install>/include</value>
+          </export>
+          <export type="libraries">
+            <key>CRABNET_LIBRARIES</key>
+            <value><install></install>/lib</value>
+          </export>
+          <export type="all">
+            <key>CRABNET_ROOT</key>
+            <value><install></install></value>
+          </export>
+          <export type="all">
+            <key>RAKNET_ROOT</key>
+            <value><install></install></value>
+          </export>
+        </exports>
+        <imports></imports>
+      </dependency>
+    </dependencies>
+    <targets>
+      <target type="executable">
+        <pre timing="build">
+          <shells>
+            <shell>
+              <work><distribution></distribution></work>
+              <commands>
+                <command>
+                  <set>
+                    <key>RAKNET_ROOT</key>
+                    <value><data id="RAKNET_ROOT"></data></value>
+                  </set>
+                </command>
+              </commands>
+            </shell>
+          </shells>
+        </pre>
+        <label>TES3MP</label>
+        <generator>
+          <switch id="BUILDSTER_OS">
+            <case check="Windows">CodeBlocks - MinGW Makefiles</case>
+            <case check="Linux">CodeBlocks - Unix Makefiles</case>
+            <case check="Darwin">Xcode</case>
+            <default><quit></quit></default>
+          </switch>
+        </generator>
+        <definitions></definitions>
+        <arguments>
+          <argument>-DOPENMW_USE_SYSTEM_MYGUI=OFF</argument>
+          <argument>-DOPENMW_USE_SYSTEM_OSG=OFF</argument>
+          <argument>-DOPENMW_USE_SYSTEM_BULLET=OFF</argument>
+          <argument>-DOPENMW_USE_SYSTEM_TINYXML=OFF</argument>
+          <argument>-DBUILD_BSATOOL=0</argument>
+          <argument>-DBUILD_NIFTEST=0</argument>
+          <argument>-DBUILD_ESMTOOL=0</argument>
+          <argument>-DBUILD_LAUNCHER=0</argument>
+          <argument>-DBUILD_MWINIIMPORTER=0</argument>
+          <argument>-DBUILD_ESSIMPORTER=0</argument>
+          <argument>-DBUILD_OPENCS=0</argument>
+          <argument>-DBUILD_WIZARD=0</argument>
+          <argument>-DBUILD_UNITTESTS=0</argument>
+          <argument>-DBUILD_BENCHMARKS=0</argument>
+        </arguments>
+        <links>
+          <if_check id="BUILDSTER_OS" check="Windows">
+            <link>setupapi</link>
+            <link>iphlpapi</link>
+            <link>psapi</link>
+            <link>userenv</link>
+            <link>gdi32</link>
+            <link>crypt32</link>
+            <link>ws2_32</link>
+            <link>iconv</link>
+          </if_check>
+        </links>
+        <imports>
+          <if_check id="BUILDSTER_OS" check="Windows">
+            <import>boost</import>
+          </if_check>
+          <import>crabnet</import>
+        </imports>
+      </target>
+    </targets>
+  </project>
+</buildster>

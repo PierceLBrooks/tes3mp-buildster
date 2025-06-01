@@ -105,21 +105,6 @@
     </dependencies>
     <targets>
       <target type="executable">
-        <pre timing="build">
-          <shells>
-            <shell>
-              <work><distribution></distribution></work>
-              <commands>
-                <command>
-                  <set>
-                    <key>RAKNET_ROOT</key>
-                    <value><data id="RAKNET_ROOT"></data></value>
-                  </set>
-                </command>
-              </commands>
-            </shell>
-          </shells>
-        </pre>
         <label>TES3MP</label>
         <generator>
           <switch id="BUILDSTER_OS">

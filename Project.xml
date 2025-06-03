@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<buildster directory="build" distribution="../Distribution">
-  <project directory="../Project" sudo="false">
+<buildster directory="build" distribution="../Distribution" sudo="false">
+  <project directory="../Project">
     <dependencies>
       <if_check id="BUILDSTER_OS" check="Windows">
         <dependency>
@@ -149,6 +149,7 @@
               </switch>
             </generator>
             <source>..</source>
+            <parallel><cores></cores></parallel>
           </cmake>
         </build>
         <exports>
@@ -217,6 +218,7 @@
               </switch>
             </generator>
             <source>..</source>
+            <parallel><cores></cores></parallel>
           </cmake>
         </build>
         <exports>
@@ -243,6 +245,7 @@
     <targets>
       <target type="executable">
         <label>TES3MP</label>
+        <parallel><cores></cores></parallel>
         <generator>
           <switch id="BUILDSTER_OS">
             <case check="Windows">CodeBlocks - MinGW Makefiles</case>
@@ -254,6 +257,15 @@
         <definitions></definitions>
         <arguments>
           <if_check id="BUILDSTER_OS" check="Darwin">
+            <!--<if_check id="BUILDSTER_VARIANT" check="Debug">
+              <argument>-DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE=Automatic</argument>
+              <argument>-DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY="Apple Development"</argument>
+              <argument>-DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES</argument>
+            </if_check>-->
+            <argument>-DCMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH=YES</argument>
+            <argument>-DCMAKE_XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC=YES</argument>
+            <argument>-DCMAKE_XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_WEAK=YES</argument>
+            <argument>-DCMAKE_XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME=NO</argument>
             <argument>-DCMAKE_PREFIX_PATH=<data id="BUILDSTER_QT"></data>;<data id="BUILDSTER_FREETYPE"></data></argument>
             <argument>-DCMAKE_FIND_FRAMEWORK=LAST</argument>
             <argument>-DCMAKE_POLICY_DEFAULT_CMP0074=NEW</argument>

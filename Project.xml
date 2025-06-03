@@ -1,8 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <buildster directory="build" distribution="../Distribution">
-  <project directory="../Project">
+  <project directory="../Project" sudo="false">
     <dependencies>
       <if_check id="BUILDSTER_OS" check="Windows">
+        <dependency>
+          <label>qt</label>
+          <subpath>build</subpath>
+          <remote>
+            <url>https://github.com/martinrotter/qt-minimalistic-builds/releases/download/5.15.3/qt-5.15.3-dynamic-msvc2019-x86_64.7z</url>
+            <wget>qt-5.15.3-dynamic-msvc2019-x86_64.7z</wget>
+          </remote>
+          <build>
+            <arguments></arguments>
+            <shells>
+              <shell>
+                <work><origin></origin></work>
+                <commands>
+                  <command><extract><origin></origin>/qt-5.15.3-dynamic-msvc2019-x86_64.7z</extract></command>
+                  <command>
+                    <if_exists>
+                      <exists><distribution></distribution>/../../plugins</exists>
+                      <else>
+                        <copy>
+                          <from><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/plugins</from>
+                          <to><distribution></distribution>/../../plugins</to>
+                        </copy>
+                      </else>
+                    </if_exists>
+                  </command>
+                </commands>
+              </shell>
+            </shells>
+          </build>
+          <exports>
+            <export type="all">
+              <key>QT_ROOT</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/lib/cmake</value>
+            </export>
+            <export type="all">
+              <key>Qt5_DIR</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/lib/cmake/Qt5</value>
+            </export>
+            <export type="libraries">
+              <key>QT_LIBRARY_PATH</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/bin</value>
+            </export>
+            <export type="headers">
+              <key>QT_INCLUDE_PATH</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/include</value>
+            </export>
+            <export type="headers">
+              <key>QT_CORE_INCLUDE_PATH</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/include/QtCore</value>
+            </export>
+            <export type="headers">
+              <key>QT_GUI_INCLUDE_PATH</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/include/QtGui</value>
+            </export>
+            <export type="headers">
+              <key>QT_WIDGETS_INCLUDE_PATH</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/include/QtWidgets</value>
+            </export>
+            <export type="headers">
+              <key>QT_NETWORK_INCLUDE_PATH</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/include/QtNetwork</value>
+            </export>
+            <export type="headers">
+              <key>QT_XML_INCLUDE_PATH</key>
+              <value><origin></origin>/qt-5/qt-5.15.3-dynamic-msvc2019-x86_64/include/QtXml</value>
+            </export>
+          </exports>
+          <imports></imports>
+        </dependency>
         <dependency>
           <label>boost</label>
           <subpath>build</subpath>
@@ -102,6 +171,74 @@
         </exports>
         <imports></imports>
       </dependency>
+      <dependency>
+        <label>osg</label>
+        <subpath>build</subpath>
+        <remote>
+          <url>https://github.com/PierceLBrooks/osg.git</url>
+          <git_repo>
+            <branch>master</branch>
+            <credentials>
+              <username>username</username>
+              <password>password</password>
+            </credentials>
+          </git_repo>
+        </remote>
+        <build>
+          <arguments>
+            <if_check id="BUILDSTER_OS" check="Darwin">
+              <argument>-DCMAKE_PREFIX_PATH=<data id="BUILDSTER_QT"></data>;<data id="BUILDSTER_FREETYPE"></data></argument>
+              <argument>-DCMAKE_FIND_FRAMEWORK=LAST</argument>
+            </if_check>
+            <argument>-DBUILD_OSG_APPLICATIONS=OFF</argument>
+            <argument>-DBUILD_OSG_DEPRECATED_SERIALIZERS=OFF</argument>
+            <argument>-DOSG_FIND_3RD_PARTY_DEPS=OFF</argument>
+            <argument>-DBUILD_OSG_PLUGINS_BY_DEFAULT=OFF</argument>
+            <argument>-DBUILD_OSG_PLUGIN_BMP=ON</argument>
+            <argument>-DBUILD_OSG_PLUGIN_DDS=ON</argument>
+            <argument>-DBUILD_OSG_PLUGIN_FREETYPE=ON</argument>
+            <argument>-DBUILD_OSG_PLUGIN_JPEG=ON</argument>
+            <argument>-DBUILD_OSG_PLUGIN_OSG=ON</argument>
+            <argument>-DBUILD_OSG_PLUGIN_PNG=ON</argument>
+            <argument>-DBUILD_OSG_PLUGIN_TGA=ON</argument>
+            <argument>-DBUILD_OSG_PLUGIN_KTX=ON</argument>
+            <argument>-DOSG_USE_FLOAT_MATRIX=ON</argument>
+            <argument>-DOSG_USE_FLOAT_PLANE=ON</argument>
+            <argument>-DOSG_USE_FLOAT_QUAT=ON</argument>
+            <argument>-DOPENGL_PROFILE=GL2</argument>
+          </arguments>
+          <cmake>
+            <generator>
+              <switch id="BUILDSTER_OS">
+                <case check="Windows">MinGW Makefiles</case>
+                <case check="Linux">Unix Makefiles</case>
+                <case check="Darwin">Xcode</case>
+                <default><quit></quit></default>
+              </switch>
+            </generator>
+            <source>..</source>
+          </cmake>
+        </build>
+        <exports>
+          <export type="headers">
+            <key>OSG_INCLUDE_PATH</key>
+            <value><install></install>/include</value>
+          </export>
+          <export type="libraries">
+            <key>OSG_LIBRARIES</key>
+            <value><install></install>/lib</value>
+          </export>
+          <export type="all">
+            <key>OSG_ROOT</key>
+            <value><install></install></value>
+          </export>
+          <export type="all">
+            <key>OpenSceneGraph_ROOT</key>
+            <value><install></install></value>
+          </export>
+        </exports>
+        <imports></imports>
+      </dependency>
     </dependencies>
     <targets>
       <target type="executable">
@@ -116,8 +253,13 @@
         </generator>
         <definitions></definitions>
         <arguments>
+          <if_check id="BUILDSTER_OS" check="Darwin">
+            <argument>-DCMAKE_PREFIX_PATH=<data id="BUILDSTER_QT"></data>;<data id="BUILDSTER_FREETYPE"></data></argument>
+            <argument>-DCMAKE_FIND_FRAMEWORK=LAST</argument>
+            <argument>-DCMAKE_POLICY_DEFAULT_CMP0074=NEW</argument>
+          </if_check>
+          <argument>-DOPENMW_USE_SYSTEM_OSG=ON</argument>
           <argument>-DOPENMW_USE_SYSTEM_MYGUI=OFF</argument>
-          <argument>-DOPENMW_USE_SYSTEM_OSG=OFF</argument>
           <argument>-DOPENMW_USE_SYSTEM_BULLET=OFF</argument>
           <argument>-DOPENMW_USE_SYSTEM_TINYXML=OFF</argument>
           <argument>-DBUILD_BSATOOL=0</argument>
@@ -145,9 +287,11 @@
         </links>
         <imports>
           <if_check id="BUILDSTER_OS" check="Windows">
+            <import>qt</import>
             <import>boost</import>
           </if_check>
           <import>crabnet</import>
+          <import>osg</import>
         </imports>
       </target>
     </targets>
